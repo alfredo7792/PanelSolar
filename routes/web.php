@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\NodeRedController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,3 +29,6 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/mostrar-datos', [NodeRedController::class, 'mostrarDatos'])->name('mostrar-datos');
+Route::post('/nodeRed', [NodeRedController::class, 'handle']);
