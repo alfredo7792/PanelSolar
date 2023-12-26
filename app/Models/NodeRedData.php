@@ -9,12 +9,13 @@ class NodeRedData extends Model
 {
     use HasFactory;
 
-    protected $table = 'node_red_data';
+    protected $table = 'sensor_data';
+    protected $primaryKey = 'SensorID';
 
     protected $fillable = [
-        'temperatura',
-        'voltaje',
-        'intensidad_luz',
-        'distancia',
+        'temperature',
+        'voltage',
+        'luminosity',
+        'proximity',
     ];
 }

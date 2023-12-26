@@ -70,10 +70,10 @@
                         @foreach ($datos as $dato)
                             <div class="data-card">
                                 <p>
-                                    <strong>Temperatura:</strong> {{ $dato->temperatura }}°C<br>
-                                    <strong>Voltaje:</strong> {{ $dato->voltaje }}V<br>
-                                    <strong>Intensidad de Luz:</strong> {{ $dato->intensidad_luz }} Lux<br>
-                                    <strong>Distancia:</strong> {{ $dato->distancia }} metros<br>
+                                    <strong>Temperatura:</strong> {{ $dato->temperature }}°C<br>
+                                    <strong>Voltaje:</strong> {{ $dato->voltage }}V<br>
+                                    <strong>Intensidad de Luz:</strong> {{ $dato->luminosity }} Lux<br>
+                                    <strong>Distancia:</strong> {{ $dato->proximity }} metros<br>
                                     <strong>Fecha de actualización:</strong> {{ $dato->updated_at }}<br>
                                 </p>
                 

@@ -19,8 +19,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->integer('rol_id')->default(1);
             $table->rememberToken();
             $table->timestamps();
+            $table->foreign('rol_id')->references('RolID')->on('rol');
         });
     }
 

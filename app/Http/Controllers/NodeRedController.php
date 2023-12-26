@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\NodeRedData;
+use Carbon\Carbon;
 
 class NodeRedController extends Controller
 {
@@ -17,18 +18,20 @@ class NodeRedController extends Controller
 
         // Si existe un registro, actualiza sus datos; sino crea uno nuevo
         if ($registroExistente) {
-            $registroExistente->update([
-                'temperatura' => $datosAgrupados['temperatura'],
-                'voltaje' => $datosAgrupados['voltaje'],
-                'intensidad_luz' => $datosAgrupados['intensidadLuz'],
-                'distancia' => $datosAgrupados['distancia'],
+            $registrounico = NodeRedData::findOrFail(1);
+            $registrounico->update([
+                'temperature' => $datosAgrupados['temperatura'],
+                'voltage' => $datosAgrupados['voltaje'],
+                'luminosity' => $datosAgrupados['intensidadLuz'],
+                'proximity' => $datosAgrupados['distancia'],
+                'updated_at' => Carbon::now()
             ]);
         } else {
             NodeRedData::create([
-                'temperatura' => $datosAgrupados['temperatura'],
-                'voltaje' => $datosAgrupados['voltaje'],
-                'intensidad_luz' => $datosAgrupados['intensidadLuz'],
-                'distancia' => $datosAgrupados['distancia'],
+                'temperature' => $datosAgrupados['temperatura'],
+                'voltage' => $datosAgrupados['voltaje'],
+                'luminosity' => $datosAgrupados['intensidadLuz'],
+                'proximity' => $datosAgrupados['distancia'],
             ]);
         }
         return $datosAgrupados;
