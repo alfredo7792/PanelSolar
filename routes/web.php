@@ -30,5 +30,10 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/mostrar-datos', [NodeRedController::class, 'mostrarDatos'])->name('mostrar-datos');
+/* Route::get('/mostrar-datos', [NodeRedController::class, 'mostrarDatos'])->name('mostrar-datos'); */
 Route::post('/nodeRed', [NodeRedController::class, 'handle']);
+
+Route::get('/mostrar', [NodeRedController::class, 'mostrarDatos']);
+Route::get('/mostrar2', [NodeRedController::class, 'procesarDatos2']);
+
+Route::get('/mostrar-datos', [NodeRedController::class, 'mostrarVista'])->name('mostrar-datos');

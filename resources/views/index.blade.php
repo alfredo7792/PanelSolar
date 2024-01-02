@@ -63,25 +63,61 @@
                             color: #fff;
                         }
                     </style>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
+                        var $j = jQuery.noConflict();
+                        function actualizarDatos() {
+                            $j.ajax({
+                                url: '/mostrar',
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(data) {
+                                    // Actualiza los elementos de tu interfaz de usuario con los nuevos datos
+                                    $('#temperatura').text(data.temperature);
+                                    $('#voltaje').text(data.voltage);
+                                    $('#distancia').text(data.proximity);
+                                    $('#intensidad').text(data.luminosity);
+                                    var fechaActualizacion = new Date(data.updated_at);
+                                    var opcionesFecha = { year: 'numeric', month: 'numeric', day: 'numeric' };
+                                    var opcionesHora = { hour: 'numeric', minute: 'numeric', second: 'numeric' };
+                                    var fechaFormateada = fechaActualizacion.toLocaleDateString('es-ES', opcionesFecha);
+                                    var horaFormateada = fechaActualizacion.toLocaleTimeString('es-ES', opcionesHora);
+
+                                    // Actualiza el elemento con la fecha y hora formateada
+                                    $('#fecha-actualizacion').text(fechaFormateada + ' ' + horaFormateada);
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error('Error al obtener datos: ' + error);
+                                }
+                            });
+                        }
+                        
+                        // Llama a la función automáticamente cada cierto tiempo (por ejemplo, cada 5 segundos)
+                        setInterval(actualizarDatos, 2000); // 5000 milisegundos = 5 segundos
+                        // Llama a la función de actualización al cargar la página
+                        actualizarDatos();
+                    </script>
+
+
                 
                     <div class="container">
                         <h1>PANEL SOLAR 1</h1>
                 
-                        @foreach ($datos as $dato)
+                        
                             <div class="data-card">
                                 <p>
-                                    <strong>Temperatura:</strong> {{ $dato->temperature }}°C<br>
-                                    <strong>Voltaje:</strong> {{ $dato->voltage }}V<br>
-                                    <strong>Intensidad de Luz:</strong> {{ $dato->luminosity }} Lux<br>
-                                    <strong>Distancia:</strong> {{ $dato->proximity }} metros<br>
-                                    <strong>Fecha de actualización:</strong> {{ $dato->updated_at }}<br>
+                                    <strong>Temperatura:</strong> <span id="temperatura"></span><br>
+                                    <strong>Voltaje:</strong> <span id="voltaje"></span><br>
+                                    <strong>Intensidad de Luz:</strong> <span id="intensidad"></span><br>
+                                    <strong>Distancia:</strong> <span  id="distancia"></span><br>
+                                    <strong>Fecha de actualización:</strong> <span id="fecha-actualizacion"></span><br>
                                 </p>
                 
                                 <div class="text-center">
                                     <img class="mx-auto d-block" style="width: 40%; height: 40%;" src="{{ asset('img/panel2.png') }}" alt="Panel Solar">
                                 </div>
                             </div>
-                        @endforeach
+                        
                     </div>
                 
                     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

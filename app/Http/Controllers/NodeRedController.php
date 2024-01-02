@@ -5,44 +5,102 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\NodeRedData;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class NodeRedController extends Controller
 {
-    public function handle(Request $request)
-    {
-        // Obtén los datos agrupados enviados desde Node-RED
-        $datosAgrupados = $request->json()->all();
+    protected $temperatura='', $voltaje='', $distancia='', $intensidad='';
 
+    function extraerValorNumerico($cadena)
+    {
+        return floatval(preg_replace('/[^0-9.]/', '', $cadena));
+    }
+
+    public function guardarDatos()
+    {
+        $temperaturaValue = $this->extraerValorNumerico($this->temperatura);
+        $voltageValue = $this->extraerValorNumerico($this->voltaje);
+        $distanciaValue = $this->extraerValorNumerico($this->distancia);
+        $intensidadValue = $this->extraerValorNumerico($this->intensidad);
         // Busca un registro existente en la base de datos
         $registroExistente = NodeRedData::first();
 
         // Si existe un registro, actualiza sus datos; sino crea uno nuevo
         if ($registroExistente) {
-            $registrounico = NodeRedData::findOrFail(1);
-            $registrounico->update([
-                'temperature' => $datosAgrupados['temperatura'],
-                'voltage' => $datosAgrupados['voltaje'],
-                'luminosity' => $datosAgrupados['intensidadLuz'],
-                'proximity' => $datosAgrupados['distancia'],
-                'updated_at' => Carbon::now()
+            $registroExistente->update([
+                'temperature' => $temperaturaValue,
+                'voltage' => $voltageValue,
+                'luminosity' => $intensidadValue,
+                'proximity' => $distanciaValue,
             ]);
         } else {
             NodeRedData::create([
-                'temperature' => $datosAgrupados['temperatura'],
-                'voltage' => $datosAgrupados['voltaje'],
-                'luminosity' => $datosAgrupados['intensidadLuz'],
-                'proximity' => $datosAgrupados['distancia'],
+                'temperature' => $temperaturaValue,
+                'voltage' => $voltageValue,
+                'luminosity' => $intensidadValue,
+                'proximity' => $distanciaValue,
             ]);
         }
-        return $datosAgrupados;
+    }   
+
+    public function procesarDatos()
+    {
+        $msg='';
+        $server   = '127.0.0.1';
+        $port     = 1883;
+        $clientId = 'cliente-subscriber';
+
+        $mqtt = new \PhpMqtt\Client\MqttClient($server, $port, $clientId);
+        $connectionSettings = (new \PhpMqtt\Client\ConnectionSettings)
+        ->setConnectTimeout(2)
+        ->setUsername("cliente")
+        ->setPassword("untcliente24");
+        $mqtt->connect($connectionSettings, true);
+        $mqtt->subscribe('temperatura', function ($topic, $message, $retained, $matchedWildcards) use ($mqtt) {
+            $this->SetTemperatura($message);
+            $mqtt->interrupt();
+        }, 1);
+        $mqtt->loop(true);
+        $mqtt->subscribe('voltaje', function ($topic, $message, $retained, $matchedWildcards) use ($mqtt) {
+            $this->SetVoltaje($message);
+            $mqtt->interrupt();
+        }, 1);
+        $mqtt->loop(true);
+        $mqtt->subscribe('intensidad', function ($topic, $message, $retained, $matchedWildcards) use ($mqtt) {
+            $this->SetIntensidad($message);
+            $mqtt->interrupt();
+        }, 1);
+        $mqtt->loop(true);
+        $mqtt->subscribe('distancia', function ($topic, $message, $retained, $matchedWildcards) use ($mqtt) {
+            $this->Setdistancia($message);
+            $mqtt->interrupt();
+        }, 1);
+        $mqtt->loop(true);
+        $mqtt->disconnect();
     }
 
-    public function mostrarDatos()
-    {
-        // Obtener todos los datos de la base de datos
-        $datos = NodeRedData::all();
+    public function SetTemperatura($temp){
+        $this->temperatura=$temp;
+    }
+    public function SetIntensidad($temp){
+        $this->intensidad=$temp;
+    }
+    public function SetVoltaje($temp){
+        $this->voltaje=$temp;
+    }
+    public function Setdistancia($temp){
+        $this->distancia=$temp;
+    }
 
-        // Pasar los datos a la vista
-        return view('index', ['datos' => $datos]);
+    public function mostrarDatos(){
+        $this->procesarDatos();
+        $this->guardarDatos();
+        $datos = NodeRedData::first();//estaba en all()
+        return response()->json($datos);
+        /* return view('index', ['datos' => $datos]); */
+    }
+
+    public function mostrarVista(){
+        return view('index');
     }
 }
