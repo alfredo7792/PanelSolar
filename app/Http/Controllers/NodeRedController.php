@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\NodeRedData;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Process\Process;
+use Illuminate\Http\Response;//borrar luego
+use Illuminate\Support\Facades\Log;//tambien borrar
 
 class NodeRedController extends Controller
 {
@@ -101,6 +104,13 @@ class NodeRedController extends Controller
     }
 
     public function mostrarVista(){
-        return view('index');
+        shell_exec("python img\prediccion2.py");
+        $temperatura = $this->temperatura;
+        $voltaje = $this->voltaje;
+        $distancia = $this->distancia;
+        $intensidad = $this->intensidad;
+        $fechaActual = Carbon::now();
+        // Pasa las variables a la vista
+        return view('index', compact('temperatura', 'voltaje', 'distancia', 'intensidad','fechaActual'));
     }
 }

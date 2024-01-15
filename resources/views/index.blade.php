@@ -26,12 +26,19 @@
                             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
                             padding: 20px;
                             width: 80%;
+                            margin-bottom: 10%
                         }
                 
-                        h1 {
+                        #panel-title {
                             color: silver;
                             text-align: center;
                             margin-bottom: 30px;
+                        }
+
+                        #prediccion-title {
+                            color: #34495e;
+                            text-align: center;
+                            margin-bottom: 10px;
                         }
                 
                         .data-card {
@@ -93,7 +100,7 @@
                         }
                         
                         // Llama a la función automáticamente cada cierto tiempo (por ejemplo, cada 5 segundos)
-                        setInterval(actualizarDatos, 2000); // 5000 milisegundos = 5 segundos
+                        setInterval(actualizarDatos, 1500); // 5000 milisegundos = 5 segundos
                         // Llama a la función de actualización al cargar la página
                         actualizarDatos();
                     </script>
@@ -101,16 +108,14 @@
 
                 
                     <div class="container">
-                        <h1>PANEL SOLAR 1</h1>
-                
-                        
+                        <h1 id="panel-title">PANEL SOLAR 1</h1>
                             <div class="data-card">
                                 <p>
-                                    <strong>Temperatura:</strong> <span id="temperatura"></span><br>
-                                    <strong>Voltaje:</strong> <span id="voltaje"></span><br>
-                                    <strong>Intensidad de Luz:</strong> <span id="intensidad"></span><br>
-                                    <strong>Distancia:</strong> <span  id="distancia"></span><br>
-                                    <strong>Fecha de actualización:</strong> <span id="fecha-actualizacion"></span><br>
+                                    <strong>Temperatura:</strong> <span id="temperatura">{{$temperatura}}</span><br>
+                                    <strong>Voltaje:</strong> <span id="voltaje">{{$voltaje}}</span><br>
+                                    <strong>Intensidad de Luz:</strong> <span id="intensidad">{{$distancia}}</span><br>
+                                    <strong>Distancia:</strong> <span  id="distancia">{{$intensidad}}</span><br>
+                                    <strong>Fecha de actualización:</strong> <span id="fecha-actualizacion">{{$fechaActual}}</span><br>
                                 </p>
                 
                                 <div class="text-center">
@@ -118,6 +123,10 @@
                                 </div>
                             </div>
                         
+                    </div>
+                    <div>
+                        <h1 id="prediccion-title">PREDICCION</h1>
+                        <img src="img/grafica_prediccion.png" alt="grafica de prediccion">
                     </div>
                 
                     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
