@@ -113,4 +113,8 @@ class NodeRedController extends Controller
         // Pasa las variables a la vista
         return view('index', compact('temperatura', 'voltaje', 'distancia', 'intensidad','fechaActual'));
     }
+
+    public function comentario(){
+        return view('comentario');
+    }
 }
